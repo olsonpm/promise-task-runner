@@ -7,7 +7,7 @@
 Because I liked the concept of a streaming build-system as made popular by Gulp, but I didn't like its task management library.  Specifically I wanted to pass command line arguments to my tasks as well as pass task results down the dependency chain.  I looked around on npm and there were no existing promise-based task libraries, thus I built my own.
 
 ## Why would I want to use this library?
-If you're like me and want to pass command line arguments to your tasks, as well as pass down task results down the dependency chain.  You might also like the promise-based interface to running tasks.
+If you're like me and want to pass command line arguments to your tasks, as well as pass task results down the dependency chain.  You might also like the promise-based interface to running tasks.
 
 ## What does a task look like?
 You declare a task using the PromiseTask object
