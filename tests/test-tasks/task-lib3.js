@@ -15,7 +15,7 @@ var jReturn = 'Roger h and i.  This is j';
 
 var h = new PromiseTask()
     .id('h')
-    .bTask(function() {
+    .task(function() {
         assert.strictEqual(this.globalArgs().arg1, 'starting arg');
         return bPromise.delay(500).thenReturn(hReturn);
     });
@@ -23,7 +23,7 @@ var h = new PromiseTask()
 var i = new PromiseTask()
     .id('i')
     .dependencies(h)
-    .bTask(function(argArrayFromH) {
+    .task(function(argArrayFromH) {
         assert.strictEqual(this.globalArgs().arg1, 'starting arg');
         assert.strictEqual(argArrayFromH[0], hReturn);
         return bPromise.delay(1000).thenReturn(iReturn);
@@ -32,7 +32,7 @@ var i = new PromiseTask()
 var j = new PromiseTask()
     .id('j')
     .dependencies([h, i])
-    .bTask(function(argArray) {
+    .task(function(argArray) {
         assert.strictEqual(this.globalArgs().arg1, 'starting arg');
         assert.strictEqual(argArray[0], hReturn);
         assert.strictEqual(argArray[1], iReturn);

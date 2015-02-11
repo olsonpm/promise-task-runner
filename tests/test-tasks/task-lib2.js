@@ -11,7 +11,7 @@ var ptc = new PromiseTaskContainer();
 
 var g = new PromiseTask()
     .id('g')
-    .bTask(function() {
+    .task(function() {
         var start = new Date();
         return bPromise.delay(500).then(function() {
             var diff = (new Date()).getTime() - start.getTime();

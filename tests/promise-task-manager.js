@@ -29,7 +29,7 @@ suite("promise-task-manager", function() {
 
         a = new PromiseTask()
             .id('a')
-            .bTask(function() {
+            .task(function() {
                 var start = new Date();
                 return bPromise.delay(500).then(function() {
                     var diff = (new Date()).getTime() - start.getTime();
@@ -40,7 +40,7 @@ suite("promise-task-manager", function() {
 
         b = new PromiseTask()
             .id('b')
-            .bTask(function() {
+            .task(function() {
                 var start = new Date();
                 return bPromise.delay(1000).then(function() {
                     var diff = (new Date()).getTime() - start.getTime();
@@ -52,7 +52,7 @@ suite("promise-task-manager", function() {
         c = new PromiseTask()
             .id('c')
             .dependencies([a, b])
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 var startTime = optArg[0];
                 var startDiff = (new Date()).getTime() - startTime.getTime();
                 assert.ok(startDiff, 1000, 50);
@@ -66,7 +66,7 @@ suite("promise-task-manager", function() {
         d = new PromiseTask()
             .id('d')
             .dependencies([a])
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 var startTime = optArg[0];
                 var startDiff = (new Date()).getTime() - startTime.getTime();
                 assert.ok(startDiff, 500, 50);
@@ -80,7 +80,7 @@ suite("promise-task-manager", function() {
         e = new PromiseTask()
             .id('e')
             .dependencies([c, d])
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 var startTime = optArg[0];
                 var startDiff = (new Date()).getTime() - startTime.getTime();
                 assert.ok(startDiff, 1500, 50);
@@ -94,7 +94,7 @@ suite("promise-task-manager", function() {
         f = new PromiseTask()
             .id('f')
             .dependencies([d, e])
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 var startTime = optArg[0];
                 var startDiff = (new Date()).getTime() - startTime.getTime();
                 assert.ok(startDiff, 2000, 50);
@@ -112,7 +112,7 @@ suite("promise-task-manager", function() {
 
         g = new PromiseTask()
             .id('g')
-            .bTask(function() {
+            .task(function() {
                 var start = new Date();
                 return bPromise.delay(500).then(function() {
                     var diff = (new Date()).getTime() - start.getTime();
@@ -123,7 +123,7 @@ suite("promise-task-manager", function() {
 
         h = new PromiseTask()
             .id('h')
-            .bTask(function(startArg) {
+            .task(function(startArg) {
                 return bPromise.delay(500).then(function() {
                     return startArg;
                 });
@@ -132,7 +132,7 @@ suite("promise-task-manager", function() {
         i = new PromiseTask()
             .id('i')
             .dependencies(h)
-            .bTask(function(argFromA) {
+            .task(function(argFromA) {
                 return bPromise.delay(1000).then(function() {
                     return argFromA + ' passed through b';
                 });
@@ -141,7 +141,7 @@ suite("promise-task-manager", function() {
         j = new PromiseTask()
             .id('j')
             .dependencies([h, i])
-            .bTask(function(argArray) {
+            .task(function(argArray) {
                 return bPromise.delay(500).then(function() {
                     argArray.push("c's return value");
                     return argArray;

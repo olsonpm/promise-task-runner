@@ -22,7 +22,7 @@ var Sequence = Lazy.Sequence
 // Public Properties
 //   - id:				string
 //   - dependencies:	ArrayLikeSequence<PromiseTask>
-//   - bTask: 			function (that returns a promise)
+//   - task: 			function (that returns a promise)
 //   - globalArgs:		Object
 //
 // Extension methods
@@ -38,9 +38,9 @@ function PromiseTask() {
     var my = {
         id: null
         , dependencies: null
-        , bTask: null
+        , task: null
         , globalArgs: null
-        , _bTaskResult: null
+        , _taskResult: null
     };
 
     this.id = function id(id_) {
@@ -72,19 +72,19 @@ function PromiseTask() {
 
         return res;
     };
-    this.bTask = function bTask(btask_) {
+    this.task = function task(task_) {
         var self = this;
-        var res = my.bTask;
-        if (typeof btask_ !== 'undefined') {
-            if (btask_ !== null) {
-                PromiseTask.validateBTask(btask_, true);
+        var res = my.task;
+        if (typeof task_ !== 'undefined') {
+            if (task_ !== null) {
+                PromiseTask.validateTask(task_, true);
             }
 
-            // bTask needs to be a singleton.  We accomplish this by setting a separate variable (_bTaskResult)
-            //   whenever btask is run.  If _bTaskResult is not set, that implies the task has not yet 
+            // task needs to be a singleton.  We accomplish this by setting a separate variable (_taskResult)
+            //   whenever task is run.  If _taskResult is not set, that implies the task has not yet 
             //   been run.  If it is set, then we return it.
-            my.bTask = function() {
-                if (my._bTaskResult === null) {
+            my.task = function() {
+                if (my._taskResult === null) {
                     var promiseArray = self.dependencies()
                         .map(function(d) {
                             if (self.globalArgs()) {
@@ -95,19 +95,19 @@ function PromiseTask() {
                         .toArray();
 
                     if (promiseArray.length) {
-                        my._bTaskResult = bPromise.all(promiseArray)
+                        my._taskResult = bPromise.all(promiseArray)
                             .bind(self)
-                            .then(btask_);
+                            .then(task_);
                     } else { // no dependencies
-                        my._bTaskResult = btask_.call(self);
+                        my._taskResult = task_.call(self);
                     }
 
                     // sanity check
-                    if (!('then' in my._bTaskResult)) {
+                    if (!('then' in my._taskResult)) {
                         throw new Error("Task with id: '" + self.id() + "' does not return a thenable.");
                     }
                 }
-                return my._bTaskResult;
+                return my._taskResult;
             };
             res = this;
         }
@@ -189,11 +189,11 @@ PromiseTask.validateGlobalArgs = function validateGlobalArgs(input, shouldThrow)
     return msg;
 };
 
-PromiseTask.validateBTask = function validateBTask(input, shouldThrow) {
+PromiseTask.validateTask = function validateTask(input, shouldThrow) {
     var msg;
 
     if (typeof input !== 'function') {
-        msg = "Invalid Argument: bTask must be a function (make sure it returns a promise)";
+        msg = "Invalid Argument: task must be a function (make sure it returns a promise)";
     }
     if (msg && shouldThrow) {
         throw new Error(msg);
@@ -208,7 +208,7 @@ PromiseTask.validateBTask = function validateBTask(input, shouldThrow) {
 //------------//
 
 PromiseTask.prototype.run = function run() {
-    return this.bTask().call(this);
+    return this.task().call(this);
 };
 
 

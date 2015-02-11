@@ -22,14 +22,14 @@ suite("PromiseTaskContainer", function() {
     setup(function() {
         t1 = new PromiseTask()
             .id('t1')
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 return bPromise.delay(500).then(function() {
                     console.log('t1 finished');
                 });
             });
         t2 = new PromiseTask()
             .id('t2')
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 return bPromise.delay(1000).then(function() {
                     console.log('t2 finished');
                 });
@@ -37,7 +37,7 @@ suite("PromiseTaskContainer", function() {
         t3 = new PromiseTask()
             .id('t3')
             .dependencies(t1)
-            .bTask(function(optArg) {
+            .task(function(optArg) {
                 return bPromise.delay(500).then(function() {
                     console.log('t3 finished');
                 });
