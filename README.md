@@ -48,4 +48,4 @@ scripts
   .id('scripts')
   .task(function() { ... });
 ```
-It's pretty intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  For more details, please see the API.
+It's pretty intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  For more details, please see the API wiki section.
