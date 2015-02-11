@@ -9,7 +9,7 @@ Because I liked the concept of a streaming build-system as made popular by Gulp,
 ## Why would I want to use this library?
 If you're like me and want to pass command line arguments to your tasks, as well as pass down task results down the dependency chain.  You might also like the promise-based interface to running tasks.  Finally, if you're used to gulp, you might want to use this library to avoid gulp's dependency on vinyl.  There is a trade-off to that last point, because vinyl can be a hinderance sometimes yet a convenience others.  Whether or not your application should use it is a value judgement.
 
-Keep in mind this library can be used along with gulp - just as a task-runner replacement.
+Keep in mind this library can be used alongside gulp - just as a task-runner replacement.
 
 ## What does a task look like?
 You declare a task using the PromiseTask object
