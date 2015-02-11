@@ -86,7 +86,7 @@ function runTask(taskName, globalTaskArgs, options) {
         })
         .catch(function(err) {
             if (err.message === PromiseTaskContainer.CIRCULAR_ERROR_MESSAGE) {
-                console.log("Error: Task '" + taskName + "' isn't able to be ran due to a circular dependency.");
+                console.log("Error: There exists a circular dependency in your tasks.  This is not allowed and must be fixed before running any tasks.");
             } else {
                 throw err;
             }

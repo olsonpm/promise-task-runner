@@ -22,7 +22,7 @@ var Sequence = Lazy.Sequence
 // Public Properties
 //   - id:				string
 //   - dependencies:	ArrayLikeSequence<PromiseTask>
-//   - task: 			function (that returns a promise)
+//   - task: 			function
 //   - globalArgs:		Object
 //
 // Extension methods
@@ -100,11 +100,6 @@ function PromiseTask() {
                             .then(task_);
                     } else { // no dependencies
                         my._taskResult = task_.call(self);
-                    }
-
-                    // sanity check
-                    if (!('then' in my._taskResult)) {
-                        throw new Error("Task with id: '" + self.id() + "' does not return a thenable.");
                     }
                 }
                 return my._taskResult;
