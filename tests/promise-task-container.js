@@ -23,24 +23,18 @@ suite("PromiseTaskContainer", function() {
         t1 = new PromiseTask()
             .id('t1')
             .task(function(optArg) {
-                return bPromise.delay(500).then(function() {
-                    console.log('t1 finished');
-                });
+                return bPromise.delay(500);
             });
         t2 = new PromiseTask()
             .id('t2')
             .task(function(optArg) {
-                return bPromise.delay(1000).then(function() {
-                    console.log('t2 finished');
-                });
+                return bPromise.delay(1000);
             });
         t3 = new PromiseTask()
             .id('t3')
             .dependencies(t1)
             .task(function(optArg) {
-                return bPromise.delay(500).then(function() {
-                    console.log('t3 finished');
-                });
+                return bPromise.delay(500);
             });
 
         ptc1 = new PromiseTaskContainer()

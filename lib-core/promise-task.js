@@ -153,15 +153,6 @@ PromiseTask.validateDependencies = function validateDependencies(input, shouldTh
 
     if (!(input instanceof ArrayLikeSequence)
         || !input.allInstanceOf(PromiseTask)) {
-        console.log('input');
-        console.log('' + input);
-        console.log('instance_of');
-        console.log(Utils.instance_of(input, ArrayLikeSequence));
-        console.log('constructor');
-        console.log(input.constructor.name);
-        console.log('prototype');
-        console.log('allInstanceOf');
-        console.log(input.allInstanceOf(PromiseTask));
         msg = "Invalid Argument: dependencies must be instanceof Array or Lazy.ArrayLikeSequence containing PromiseTask objects.";
     }
     if (msg && shouldThrow) {
