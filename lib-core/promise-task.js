@@ -87,9 +87,6 @@ function PromiseTask() {
                 if (my._taskResult === null) {
                     var promiseArray = self.dependencies()
                         .map(function(d) {
-                            if (self.globalArgs()) {
-                                d.globalArgs(self.globalArgs());
-                            }
                             return d.run();
                         })
                         .toArray();
@@ -99,7 +96,9 @@ function PromiseTask() {
                             .bind(self)
                             .then(task_);
                     } else { // no dependencies
-                        my._taskResult = task_.call(self);
+                        my._taskResult = bPromise.resolve()
+                            .bind(self)
+                            .then(task_);
                     }
                 }
                 return my._taskResult;

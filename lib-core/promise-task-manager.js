@@ -129,10 +129,18 @@ PromiseTaskManager.prototype.runTask = function runTask(id, optGlobalArgs) {
         optGlobalArgs = null;
     }
 
-    return this.taskContainer()
-        .checkForCircularDependencies()
-        .getTask(id, true)
-        .globalArgs(optGlobalArgs)
+    // first do a naive check for circular dependencies (naive because it can't be perfect)
+    var tc = this.taskContainer()
+        .checkForCircularDependencies();
+
+    // set globalArgs for all tasks.  This is necessary in case dependencies are created within the
+    //   tasks themselves, as opposed to being declared.  Ideally we'd only set the global args
+    //   for tasks that actually run.
+    tc._taskList().each(function(t) {
+        t.globalArgs(optGlobalArgs);
+    });
+
+    return tc.getTask(id, true)
         .run();
 };
 
