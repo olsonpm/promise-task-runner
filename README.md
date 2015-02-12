@@ -4,10 +4,10 @@
  - To avoid confusion, the abbreviation 'ptr' is for promise-task-runner.
 
 ## First of all, why does promise-task-runner exist?
-Because I liked the concept of a streaming build-system as made popular by Gulp, but I didn't like its task management library.  Specifically I wanted to pass command line arguments to my tasks as well as pass task results down the dependency chain.  I looked around on npm and there were no existing promise-based task libraries, thus I built my own.
+Because I liked the concept of a streaming build-system as made popular by Gulp, but I didn't like its task management library.  I thought dependencies would be best handled via promises, I thought command-line option support should be built-in, and I thought tasks should be able to pass results down to other dependent tasks.
 
-## Why would I want to use this library?
-If you're like me and want to pass command line arguments to your tasks, as well as pass task results down the dependency chain.  You might also like the promise-based interface to running tasks.
+## Why would I want to use this tool?
+You'll find this tool useful if you're more comfortable managing task dependencies via promises, or want tasks to pass results down to dependent tasks.  I also hope you find ptr easy to pick up, as I've spent a lot of effort organizing the documentation for ease of use.  There are plenty of examples and an explicit API.
 
 ## What does a task look like?
 You declare a task using the PromiseTask object
@@ -46,4 +46,7 @@ scripts
   .id('scripts')
   .task(function() { ... });
 ```
-It's pretty intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  For more details, please see the API wiki section.
+It's intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  For more details, please see the API wiki section.
+
+## How do I get started
+[The wiki should get you on your way](https://github.com/olsonpm/promise-task-runner/wiki/Getting-Started)
