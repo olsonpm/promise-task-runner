@@ -1,6 +1,6 @@
 # promise-task-runner
 
- - This readme covers a few basics.  For anything more, please see the wiki.
+ - This readme covers a few basics.  For anything more, please see [the wiki](https://github.com/olsonpm/promise-task-runner/wiki).  I have spent a lot of effort into making the wiki useful, so please give it a shot.
  - To avoid confusion, the abbreviation 'ptr' is for promise-task-runner.
 
 ## First of all, why does promise-task-runner exist?
@@ -46,7 +46,8 @@ scripts
   .id('scripts')
   .task(function() { ... });
 ```
-It's intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  For more details, please see the API wiki section.
+It's intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  [The API preface](https://github.com/olsonpm/promise-task-runner/wiki/API#preface) gives a little more detail.
 
 ## How do I get started
 [The wiki should get you on your way](https://github.com/olsonpm/promise-task-runner/wiki/Getting-Started)
+
