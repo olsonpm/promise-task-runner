@@ -75,8 +75,7 @@ function runTask(taskName, globalTaskArgs, options) {
 
     var tmpTaskDir = options.taskDir
         || curConfig.get(TASKDIR, {
-            shouldThrow: true
-            , defaultIfNone: DEFAULT_TASKDIR
+            defaultIfNone: DEFAULT_TASKDIR
         });
     if (tmpTaskDir.length >= 1 && tmpTaskDir.slice(0, 1) !== '/') {
         tmpTaskDir = path.join(process.cwd(), tmpTaskDir);
