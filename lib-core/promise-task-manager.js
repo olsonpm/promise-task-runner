@@ -23,7 +23,6 @@ var Sequence = Lazy.Sequence;
 // Model: PromiseTaskManager
 //
 // Public Properties
-//   - taskDir:			string
 //   - taskContainer:	PromiseTaskContainer
 //
 // Extension methods
@@ -38,21 +37,7 @@ var Sequence = Lazy.Sequence;
 
 function PromiseTaskManager() {
     var my = {
-        taskDir: null
-        , taskContainer: null
-    };
-
-    this.taskDir = function(taskdir_) {
-        var res = my.taskDir;
-        if (typeof taskdir_ !== 'undefined') {
-            if (taskdir_ !== null) {
-                PromiseTaskManager.validateTaskDir(taskdir_, true);
-            }
-            my.taskDir = taskdir_;
-            res = this;
-        }
-
-        return res;
+        taskContainer: null
     };
 
     this.taskContainer = function(taskcontainer_) {
@@ -74,18 +59,6 @@ function PromiseTaskManager() {
 // Validation //
 //------------//
 
-PromiseTaskManager.validateTaskDir = function validateTaskDir(input, shouldThrow) {
-    var msg;
-    if (!bFs.existsSync(input)) {
-        msg = "Invalid Argument: Directory '" + input + "' doesn't exist";
-    }
-    if (msg && shouldThrow) {
-        throw new Error(msg);
-    }
-
-    return msg;
-};
-
 PromiseTaskManager.validateTaskContainer = function validateTaskContainer(input, shouldThrow) {
     var msg;
 
@@ -104,16 +77,22 @@ PromiseTaskManager.validateTaskContainer = function validateTaskContainer(input,
 // Extensions //
 //------------//
 
-PromiseTaskManager.prototype.gatherTasks = function gatherTasks() {
-    var self = this;
-    self.taskContainer(new PromiseTaskContainer());
+PromiseTaskManager.prototype.gatherTasks = function gatherTasks(taskDir) {
+    if (!bFs.existsSync(taskDir)) {
+        throw new Error("Invalid Argument: Directory '" + taskDir + "' doesn't exist");
+    }
 
-    return bFs.readdirAsync(self.taskDir())
+    var self = this;
+    if (self.taskContainer() === null) {
+        self.taskContainer(new PromiseTaskContainer());
+    }
+
+    return bFs.readdirAsync(taskDir)
         .then(function(files) {
             var ptcArray = files.map(function(f) {
                 // remove extension and create full path from that
                 f = path.basename(f, path.extname(f));
-                return require(path.join(self.taskDir(), f));
+                return require(path.join(taskDir, f));
             });
 
             self.taskContainer().gatherContainers(ptcArray);

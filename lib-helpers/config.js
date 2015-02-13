@@ -17,25 +17,71 @@ function Config(argsObj) {
     this._defaultConfig = argsObj._defaultConfig || Config._DEFAULT_CONFIG_LOCATION;
 
     this.Locations = [
-        new Location('PACKAGE', 10, getFromPackageJson, {
+        new Location(Config.PACKAGE.key, Config.PACKAGE.name, 10, getFromPackageJson, {
             dir: this.packageJsonDir
             , rootProp: this.packageJsonRootProperty
         })
-        , new Location('ENV', 20, getFromEnv, {
+        , new Location(Config.ENV.key, Config.ENV.name, 20, getFromEnv, {
             envPrefix: this.envPrefix
         })
-        , new Location('DEFAULT', 30, getFromDefault, {
+        , new Location(Config.DEFAULT.key, Config.DEFAULT.name, 30, getFromDefault, {
             defaultConfig: this._defaultConfig
         })
     ];
 }
 
+Config.PACKAGE = {
+    key: 'PACKAGE'
+    , name: 'package.json'
+};
+Config.ENV = {
+    key: 'ENV'
+    , name: 'Environment variable'
+};
+Config.DEFAULT = {
+    key: 'DEFAULT'
+    , name: 'Default configuration'
+};
+
 Config.prototype.get = function get(propName, argsObj) {
+    argsObj = argsObj || {};
+    var newArgsObj = {
+        defaultIfNone: argsObj.defaultIfNone
+        , shouldThrow: argsObj.shouldThrow
+    };
+    return this._getValAndLocation(propName, argsObj).val;
+};
+
+Config.prototype.getValAndLocation = function getPropAndLocation(propName, argsObj) {
+    argsObj = argsObj || {};
+    var newArgsObj = {
+        defaultIfNone: argsObj.defaultIfNone
+        , shouldThrow: argsObj.shouldThrow
+    };
+    return this._getValAndLocation(propName, newArgsObj);
+};
+
+Config.prototype.getFromLocation = function getFromLocation(propName, location, argsObj) {
+    argsObj = argsObj || {};
+    var newArgsObj = {
+        defaultIfNone: argsObj.defaultIfNone
+        , shouldThrow: argsObj.shouldThrow
+        , location: location
+    };
+    return this._getValAndLocation(propName, newArgsObj).val;
+};
+
+Config.prototype._getValAndLocation = function _getValAndLocation(propName, argsObj) {
     var res;
     argsObj = argsObj || {};
+    var defaultIfNone = argsObj.defaultIfNone;
     var location = argsObj.location;
     var shouldThrow = argsObj.shouldThrow;
     var curLocation;
+
+    if (defaultIfNone && shouldThrow) {
+        throw new Error("Invalid Argument: defaultIfNone and shouldThrow cannot both be truthy");
+    }
 
     if (typeof location === 'undefined') {
         curLocation = Lazy(this.Locations)
@@ -46,27 +92,34 @@ Config.prototype.get = function get(propName, argsObj) {
                 return l.getProp(propName);
             });
 
-        if (typeof curLocation === 'undefined') {
+        if (typeof curLocation === 'undefined' && shouldThrow) {
             throw new Error("Invalid Argument: Configuration property '" + propName + "' not found in any locations");
         }
-
-        res = curLocation.getProp(propName);
     } else { // location is defined
         curLocation = Lazy(this.Locations)
             .find(function(l) {
-                return l.name.toLowerCase() === location.toLowerCase();
+                return l.key.toLowerCase() === location.toLowerCase();
             });
         if (typeof curLocation === 'undefined') {
             throw new Error("Invalid Argument: Location '" + location + "' doesn't exist");
         }
-
-        res = curLocation.getProp(propName);
     }
 
-    if (shouldThrow && typeof res === 'undefined') {
+    res = curLocation && curLocation.getProp(propName);
+
+    if (typeof res === 'undefined' && typeof defaultIfNone !== 'undefined') {
+        res = defaultIfNone;
+        curLocation = {
+            name: Config.DEFAULT.name
+        };
+    } else if (typeof res === 'undefined' && shouldThrow) {
         throw new Error("Invalid Argument: Property '" + propName + "' hasn't been set");
     }
-    return res;
+
+    return {
+        location: curLocation.name
+        , val: res
+    };
 };
 
 Config.prototype.setDefault = function setDefault(propName, val) {
@@ -87,10 +140,8 @@ Config.prototype.setDefault = function setDefault(propName, val) {
     bFs.writeFileSync(tmpConfigFile, JSON.stringify(resJson, null, 4));
 };
 
-Config.prototype.getDefault = function getDefault(propName) {
-    return this.get(propName, {
-        location: 'default'
-    });
+Config.prototype.getDefault = function getDefault(propName, argsObj) {
+    return this.getFromLocation(propName, 'default', argsObj);
 };
 
 Config.prototype.removeDefault = function removeDefault(propName) {
@@ -102,7 +153,8 @@ Config.prototype.removeDefault = function removeDefault(propName) {
 // Set up built-in locations //
 //---------------------------//
 
-function Location(name_, priority_, getter_, getterArgsObj_) {
+function Location(key_, name_, priority_, getter_, getterArgsObj_) {
+    this.key = key_;
     this.name = name_;
     this.priority = priority_;
     this.getter = getter_;
@@ -111,10 +163,6 @@ function Location(name_, priority_, getter_, getterArgsObj_) {
 Location.prototype.getProp = function getProp(propName, shouldThrow) {
     return this.getter.call(this, propName, shouldThrow, this.getArgsObj);
 };
-
-Location.PACKAGE = 'PACKAGE';
-Location.ENV = 'ENV';
-Location.DEFAULT = 'DEFAULT';
 
 function getFromEnv(propName, shouldThrow, argsObj) {
     argsObj = argsObj || {};
@@ -163,11 +211,10 @@ function getFromDefault(propName, shouldThrow, argsObj) {
     var configJson = {};
 
     var configPath = path.join(__dirname, argsObj.defaultConfig);
-    try {
+    if (bFs.existsSync(configPath)) {
         configJson = require(configPath);
-    } catch (err) {
-        // config file doesn't exist
-        throw new Error("No config.json file exists at '" + configPath + "'");
+    } else { // config.json doesn't exist, so let's create it
+        bFs.writeFileSync(configPath, JSON.stringify({}));
     }
 
     var res = configJson[propName];

@@ -1,0 +1,6 @@
+{
+  "testConfig": {
+	  "testPropName": "testPropVal",
+	  "testPackageJsonPriority": "packageJsonVal"
+  }
+}

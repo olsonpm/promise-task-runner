@@ -61,12 +61,20 @@ function PromiseTask() {
             : my.dependencies;
         if (typeof dependencies_ !== 'undefined') {
             if (dependencies_ !== null) {
+                var args;
                 if (Utils.instance_of(dependencies_, PromiseTask)) {
-                    dependencies_ = [dependencies_];
+                    args = Lazy(Array.prototype.slice.call(arguments));
+                } else if (Utils.instance_of(dependencies_, Array)) {
+                    args = Lazy(dependencies_);
+                } else {
+                    args = [dependencies_];
                 }
-                PromiseTask.validateDependencies(dependencies_, true);
+
+                PromiseTask.validateDependencies(args, true);
+                my.dependencies = Lazy(args);
+            } else {
+                my.dependencies = Lazy([]);
             }
-            my.dependencies = Lazy(dependencies_);
             res = this;
         }
 
@@ -143,16 +151,15 @@ PromiseTask.validateID = function validateID(input, shouldThrow) {
 
 PromiseTask.validateDependencies = function validateDependencies(input, shouldThrow) {
     var msg;
-    debugger;
 
     if (Utils.instance_of(input, PromiseTask)) {
         input = [input];
     }
     input = Lazy(input);
 
-    if (!(input instanceof ArrayLikeSequence)
+    if (!(Utils.instance_of(input, ArrayLikeSequence))
         || !input.allInstanceOf(PromiseTask)) {
-        msg = "Invalid Argument: dependencies must be instanceof Array or Lazy.ArrayLikeSequence containing PromiseTask objects.";
+        msg = "Invalid Argument: dependencies must be a comma separated list of PromiseTasks, an Array of PromiseTasks, or a Lazy.ArrayLikeSequence containing PromiseTask objects.";
     }
     if (msg && shouldThrow) {
         throw new Error(msg);

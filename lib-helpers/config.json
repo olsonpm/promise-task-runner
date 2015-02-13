@@ -1,0 +1,6 @@
+{
+    "testPropName": "testPropVal",
+    "testEnvPriority": "defaultVal",
+    "testDefaultPriority": "defaultVal",
+    "testPackageJsonPriority": "defaultVal"
+}

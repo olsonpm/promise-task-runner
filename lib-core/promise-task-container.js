@@ -92,8 +92,10 @@ PromiseTaskContainer.validateTaskList = function validateTaskList(input, shouldT
 //------------//
 
 PromiseTaskContainer.prototype.addTask = function addTask(pt_) {
-    if (!(Utils.instance_of(pt_, PromiseTask))) {
-        throw new Error("Invalid Argument: <PromiseTaskContainer>.add requires a PromiseTask argument");
+    if (arguments.length > 1) {
+        throw new Error("Invalid Argument: <PromiseTaskContainer>.addTask requires only a single argument (Prevents typos between addTask/addTasks)");
+    } else if (!(Utils.instance_of(pt_, PromiseTask))) {
+        throw new Error("Invalid Argument: <PromiseTaskContainer>.addTask requires a PromiseTask argument");
     } else if (typeof this._taskList().get(pt_.id()) !== 'undefined') {
         throw new Error("Invalid Argument: This container already contains a task with id of '" + pt_.id() + "'");
     }
@@ -180,8 +182,10 @@ PromiseTaskContainer.prototype.checkForCircularDependencies = function checkForC
     try {
         tsort.sort();
     } catch (e) {
-        // don't care about the library's error, we'll throw our own
-        throw new Error(CIRCULAR_ERROR_MESSAGE);
+        // Creating a friendly error message, while attaching the original as a property.
+        var err = new Error(CIRCULAR_ERROR_MESSAGE);
+        err.originalMessage = e.message;
+        throw err;
     }
 
     return this;
