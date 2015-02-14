@@ -15,25 +15,25 @@ You declare a task using the PromiseTask object
 // tasks/scripts.js
 var ptr = require('promise-task-runner');
 var PromiseTask = ptr.PromiseTask
-var scripts = new PromiseTask()
-  .id('scripts')
+var build = new PromiseTask()
+  .id('build')
   .task(function() {
     // task logic
   });
 ```
 Then add it to a PromiseTaskContainer and export the container
 ```
-// tasks/scripts.js
+// tasks/build.js
 ...
 var PromiseTaskContainer = ptr.PromiseTaskContainer;
 var ptc = new PromiseTaskContainer();
-ptc.addTask(scripts);
+ptc.addTask(build);
 module.exports = ptc;
 ```
 Now in your root project folder, you can call:
 ```
-$ ptr run-task scripts
-Finished running task 'scripts' in 0.2 seconds
+$ ptr run-task build
+Finished running task 'build' in 0.2 seconds
 ```
 
 ## Great, how do I get started?
