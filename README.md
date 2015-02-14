@@ -12,7 +12,7 @@ You'll find this tool useful if you're more comfortable managing task dependenci
 ## What does a task look like?
 You declare a task using the PromiseTask object
 ```
-// tasks/scripts.js
+// tasks/build.js
 var ptr = require('promise-task-runner');
 var PromiseTask = ptr.PromiseTask
 var build = new PromiseTask()
