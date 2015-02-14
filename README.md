@@ -1,6 +1,6 @@
 # promise-task-runner
 
- - This readme covers a few basics.  For anything more, please see [the wiki](https://github.com/olsonpm/promise-task-runner/wiki).  I have spent a lot of effort into making the wiki useful, so please give it a shot.
+ - This readme covers a few basics.  For anything more, please see [the wiki](https://github.com/olsonpm/promise-task-runner/wiki).  I have spent a lot of effort into making the wiki useful, so give it a shot.
  - To avoid confusion, the abbreviation 'ptr' is for promise-task-runner.
 
 ## First of all, why does promise-task-runner exist?
