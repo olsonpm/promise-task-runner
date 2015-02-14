@@ -36,6 +36,9 @@ $ ptr run-task scripts
 Finished running task 'scripts' in 0.2 seconds
 ```
 
+## Great, how do I get started?
+[The wiki should get you on your way](https://github.com/olsonpm/promise-task-runner/wiki/Getting-Started)
+
 ## What's with the weird (fluent) api?
 You'll notice that instead of passing in constructor function parameters, you pass them in via property functions that act both as getters and setters.  You set the property by passing a parameter, and you get the property by calling it with no parameters.  Thus, using the task 'scripts' from above:
 ```
@@ -47,7 +50,3 @@ scripts
   .task(function() { ... });
 ```
 It's intuitive and removes ambiguity between what function parameters are, what order they need to be passed, and how optional parameter logic is handled.  [The API preface](https://github.com/olsonpm/promise-task-runner/wiki/API#preface) gives a little more detail.
-
-## How do I get started
-[The wiki should get you on your way](https://github.com/olsonpm/promise-task-runner/wiki/Getting-Started)
-
