@@ -10,6 +10,11 @@ var PromiseTask = require('./promise-task')
     , Utils = require('../lib-helpers/utils')
     , Lazy = require('../lib-helpers/lazy-extensions');
 
+
+//------//
+// Init //
+//------//
+
 var Sequence = Lazy.Sequence;
 var ObjectLikeSequence = Lazy.ObjectLikeSequence;
 

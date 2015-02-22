@@ -5,12 +5,18 @@
 //---------//
 
 var Utils = require('../lib-helpers/utils')
-    , Lazy = require('../lib-helpers/lazy-extensions')
+    , lazy = require('../lib-helpers/lazy-extensions')
     , chai = require('chai')
     , bPromise = require('bluebird');
 
-var Sequence = Lazy.Sequence
-    , ArrayLikeSequence = Lazy.ArrayLikeSequence;
+
+//------//
+// Init //
+//------//
+
+bPromise.longStackTraces();
+var Sequence = lazy.Sequence
+    , ArrayLikeSequence = lazy.ArrayLikeSequence;
 
 
 //----------------------------------------------------------------//
@@ -57,23 +63,23 @@ function PromiseTask() {
     };
     this.dependencies = function dependencies(dependencies_) {
         var res = ((my.dependencies) === null)
-            ? Lazy([])
+            ? lazy([])
             : my.dependencies;
         if (typeof dependencies_ !== 'undefined') {
             if (dependencies_ !== null) {
                 var args;
                 if (Utils.instance_of(dependencies_, PromiseTask)) {
-                    args = Lazy(Array.prototype.slice.call(arguments));
+                    args = lazy(Array.prototype.slice.call(arguments));
                 } else if (Utils.instance_of(dependencies_, Array)) {
-                    args = Lazy(dependencies_);
+                    args = lazy(dependencies_);
                 } else {
                     args = [dependencies_];
                 }
 
                 PromiseTask.validateDependencies(args, true);
-                my.dependencies = Lazy(args);
+                my.dependencies = lazy(args);
             } else {
-                my.dependencies = Lazy([]);
+                my.dependencies = lazy([]);
             }
             res = this;
         }
@@ -88,9 +94,10 @@ function PromiseTask() {
                 PromiseTask.validateTask(task_, true);
             }
 
-            // task needs to be a singleton.  We accomplish this by setting a separate variable (_taskResult)
-            //   whenever task is run.  If _taskResult is not set, that implies the task has not yet 
-            //   been run.  If it is set, then we return it.
+            // task should cache the promise during a run.  We accomplish this by setting a separate variable 
+            //   (_taskResult) whenever task is run.  If _taskResult is not set, that implies the task has not yet 
+            //   been run.  If it is set, then we return it.  Once returned, we set result back to null to allow
+            //   for the task to be ran again.
             my.task = function() {
                 if (my._taskResult === null) {
                     var promiseArray = self.dependencies()
@@ -109,7 +116,11 @@ function PromiseTask() {
                             .then(task_);
                     }
                 }
-                return my._taskResult;
+
+                return my._taskResult
+                    .then(function(res) {
+                        my._taskResult = null;
+                    });
             };
             res = this;
         }
@@ -155,11 +166,11 @@ PromiseTask.validateDependencies = function validateDependencies(input, shouldTh
     if (Utils.instance_of(input, PromiseTask)) {
         input = [input];
     }
-    input = Lazy(input);
+    input = lazy(input);
 
     if (!(Utils.instance_of(input, ArrayLikeSequence))
         || !input.allInstanceOf(PromiseTask)) {
-        msg = "Invalid Argument: dependencies must be a comma separated list of PromiseTasks, an Array of PromiseTasks, or a Lazy.ArrayLikeSequence containing PromiseTask objects.";
+        msg = "Invalid Argument: dependencies must be a comma separated list of PromiseTasks, an Array of PromiseTasks, or a lazy.ArrayLikeSequence containing PromiseTask objects.";
     }
     if (msg && shouldThrow) {
         throw new Error(msg);

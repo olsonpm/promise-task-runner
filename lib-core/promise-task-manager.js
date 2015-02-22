@@ -13,6 +13,12 @@ var bPromise = require('bluebird')
     , Utils = require('../lib-helpers/utils')
     , chai = require('chai');
 
+
+//------//
+// Init //
+//------//
+
+bPromise.longStackTraces();
 var Sequence = Lazy.Sequence;
 
 
